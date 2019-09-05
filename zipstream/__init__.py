@@ -208,6 +208,17 @@ class ZipFile(zipfile.ZipFile):
         self._comment = comment
         self._didModify = True
 
+    def next_file(self):
+        if len(self.paths_to_write) > 0:
+            for data in self.__write(**self.paths_to_write[0]):
+                yield data
+
+            self.paths_to_write = self.paths_to_write[1 :]
+
+        if len(self.paths_to_write) == 0:
+            for data in self.__close():
+                yield data
+
     def write(self, filename, arcname=None, compress_type=None):
         # TODO: Reflect python's Zipfile.write
         #   - if filename is file, write as file
