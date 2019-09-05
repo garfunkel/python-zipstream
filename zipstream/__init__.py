@@ -208,14 +208,14 @@ class ZipFile(zipfile.ZipFile):
         self._comment = comment
         self._didModify = True
 
-    def next_file(self):
+    def next_file(self, closable = False):
         if len(self.paths_to_write) > 0:
             for data in self.__write(**self.paths_to_write[0]):
                 yield data
 
             self.paths_to_write = self.paths_to_write[1 :]
 
-        if len(self.paths_to_write) == 0:
+        if closable and len(self.paths_to_write) == 0:
             for data in self.__close():
                 yield data
 
